@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Loading...</title>
+    <link rel="stylesheet" href="./style.css" />
+    <link preload rel="preconnect" href="https://fonts.googleapis.com">
+    <link preload rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link preload href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
+    <script defer src="./script.js"></script>
+    <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="color-scheme" content="dark light">
+  </head>
+  <body>
+    <div class="input">
+      <h1> Preview emojis from the discord api response </h1>
+      <div class="status hidden">
+        <div class="header"><span>meow</span><button>meow</button></div>
+        <code class="body">:3</code>
+      </div>
+      <div class="control"> 
+        <button id="run" title="Preview the emojis">
+          preview
+        </button>
+        <button id="fmt">
+          JSON.stringify(JSON.parse(input_text), 0, 4)
+        </button>
+        <textarea autofocus autocorrect="off" autocomplete="off" id="jsn" placeholder="Array of emoji JSONs or a single emoji JSON" name="Input"></textarea>
+      </div>
+    </div>
+    <div class="results">
+      <button class="hidden" id="back" title="Back to the control side">&#10094; back</button>
+      <div class="result">
+        <h1> Results (<span id="result_amount">0</span>) </h1>
+        <h2>No results yet</h2>
+        <div class="emojis">
+
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

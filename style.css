@@ -1,0 +1,136 @@
+* {
+	margin: 0;
+	padding: 0;
+  font-family: 'Noto Sans', sans-serif;
+}
+.hidden {
+	opacity: 0;
+}
+
+html {
+  scroll-snap-type: x mandatory;
+}
+body {
+	width: 200dvw;
+  height: 100dvh;
+	display: flex;
+  flex-direction: row;
+  scrollbar-width: none;
+  -ms-overflow-style: none
+}
+html::-webkit-scrollbar {
+  display: none;
+}
+
+body > div {
+	width: 50%;
+  scroll-snap-align: end;
+}
+
+
+/* input side */
+body > .input {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-around;
+}
+body > .input > h1,
+body > .input > .status,
+body > .input > .control {
+	margin: .5rem;
+}
+
+body > .input > h1 {
+	margin-top: 2rem;
+  text-align: center;
+}
+
+body > .input > .control > textarea#jsn {
+	border-radius: .2rem;
+  width: 50dvw;
+  min-width: 15rem;
+  resize: horizontal;
+  height: 100%;
+	transition: unset;
+  padding: .5rem;
+}
+
+
+body > .input > .control {
+	height: 100%;
+  display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: .5rem;
+}
+body > .input > .control > button#run {
+	font-size: 2rem;
+	padding: .5rem;
+}
+
+
+
+.status {
+	border: 1px solid red;
+	border-radius: .2rem;
+	transition: opacity .25s ease-in;
+  box-shadow: 0 0 0.5rem 0px rgb(255 0 0);
+}
+.status > .header {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	align-items: flex-start;
+	width: 100%;
+	background: linear-gradient(rgb(255,0,0), rgba(0,0,0,0));	
+}
+.status > .header button {
+	margin-left: .5rem;
+	margin-top: .5rem;
+	text-align: center;
+	cursor: pointer;
+	height: 2rem;
+}
+.status > .header button:last-of-type {
+	margin-right: .5rem;
+}
+
+.status > .header #name  {
+	color: white;
+	margin-left: .5rem;
+	margin-top: .5rem;
+	display: block;
+	width: 100%;
+}
+.status > .body {
+	display: inline-block;
+	height: 10rem;
+	overflow-y: scroll;	
+	margin: .5rem;
+}
+
+
+
+
+
+/* results' side */
+
+body > .results > .result {
+  display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-around;
+  width: 100%;
+}
+body > .results {
+  position: relative;
+}
+body > .results > button#back {
+  padding: .2rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: opacity .5s ease-out;
+  font-size: 200%;
+}
