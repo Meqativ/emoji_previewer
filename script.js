@@ -130,7 +130,7 @@ back_btn.classList.remove("hidden")
 back_btn.inert = false;
 back_btn.addEventListener("click", () => document.querySelector("body > .input").scrollIntoView({behavior: "smooth"}))
 
-document.addEventListener("keyup", (event) => { 
+/*document.addEventListener("keyup", (event) => { 
   if (event.altKey !== true || event.code !== "KeyR") return; 
   let links = document.querySelectorAll("link"); 
   for (var i = 0; i < links.length; i++) { 
@@ -149,4 +149,4 @@ run({
   managed: false,
   animated: false,
   available: true
-})
+})*/
