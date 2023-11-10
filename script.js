@@ -3,6 +3,16 @@ const json_input = document.querySelector("#jsn")
 if (window.localStorage["json_input.last_value"] === undefined) window.localStorage["json_input.last_value"] = "";
 json_input.value = window.localStorage["json_input.last_value"]; 
 json_input.addEventListener("change", () => window.localStorage["json_input.last_value"] = json_input.value)
+const checkbox_containers  = document.querySelectorAll('.toggle_container:has(input[type="checkbox"])');
+checkbox_containers.forEach((container)=>{
+  const [label, checkbox] = container.children;
+  const variableName = checkbox.id.slice(1);
+  checkbox.checked = window.localStorage[variableName] !== undefined ? window.localStorage[variableName] === "true" ? 1 : 0 : checkbox.getAttribute("default") === "true" ? 1 : 0;
+
+  checkbox.addEventListener('change', () => {
+    window.localStorage[variableName]  = checkbox.checked;
+  });
+})
 
 const status_body = document.querySelector(".status"),
   status_header = document.querySelector(".status .header"),
@@ -85,18 +95,34 @@ function select(line, column, textarea){
 }
 
 
-function run(emojis) {
-  let parsed = emojis ?? parse_textarea_value();
-  
-  if (Array.isArray(parsed) === false) parsed = [parsed];
+async function run(toparse) {
+  let emojis = toparse ?? parse_textarea_value();
+  if (emojis === undefined) return show_error("No input provided", "test"); 
+  if (Array.isArray(emojis) === false) emojis = [emojis];
 
-  for (const emoji of parsed) {
-    console.log(emoji);
+  if (window.localStorage["wait"] === "true") {
+    for (let i = 0; i < emojis.length; i++) {
+      try {
+        await add_emoji(emojis[i], i, EMOJI_SIZES.WTEXT);
+      } catch (e) {
+        console.error(e);
+        let id;
+        return show_error("Unable to add_emoji from index " + i + " " + (((id=emojis[i]?.id)) ? `(id: ${id})` : ''), e);
+      }
+    }
+  } else {
+    Promise.allSettled(emojis.map((e,i) => add_emoji(e, i, EMOJI_SIZES.WTEXT)))
+    .then(
+      rs => {
+        if (rs.find(res=>res.status === "rejected")) show_error("There were some errors while loading the emojis", rs.filter(res=>res.status==="rejected").map(r=>r.stack).join("\n"))
+      }
+    )
   }
-  
+
   document.querySelector("body > .results").scrollIntoView({ behavior: "smooth" });
 }
 run_btn.addEventListener("click", () => run());
+
 
 function parse_textarea_value() {
   if (json_input.value.length === 0) {
@@ -124,6 +150,41 @@ function parse_textarea_value() {
   return parsed;
 }
 
+
+const EMOJI_SIZES = {
+  WTEXT: "44",
+  NORMAL: "96",
+  MAX: "4096",
+}
+function get_emoji_url(id,animated,size) {
+  return `https://cdn.discordapp.com/emojis/${id}.${animated ? "gif" : "webp"}?size=${size??EMOJI_SIZES.MAX_JUMBO}&quality=lossless`
+}
+
+const emoji_results_elem = document.querySelector(".result > .emojis")
+
+function add_emoji(emoji, i, size) {
+  return new Promise((res,rej)=>{
+    const emoji_img = new Image();
+    const error = new Error(); error.data = emoji;
+    if (!("id" in emoji)) throw (error.message = "No 'id' provided", error);
+    if (!("animated" in emoji)) {
+      console.info(`[emoji #${i}] > No 'animated' provided, fallbacking to static`);
+      emoji.animated = false;
+    }
+    emoji_img.addEventListener("error", (err) => {
+      console.error(err)
+      rej({stack:"See errors in devtools near "+new Date().toLocaleTimeString()})
+    })
+    emoji_img.addEventListener("load", () => {
+      res(emoji_img)
+    })
+
+    emoji_img.src = get_emoji_url(emoji.id, emoji.animated, size);
+    emoji_results_elem.append(emoji_img)
+  });
+}  
+
+
 back_btn.classList.remove("hidden")
 back_btn.inert = false;
 back_btn.addEventListener("click", () => document.querySelector("body > .input").scrollIntoView({ behavior: "smooth" }));
@@ -140,8 +201,8 @@ back_btn.addEventListener("click", () => document.querySelector("body > .input")
 });
 
 run({
-  id: "881598836999610388",
-  name: "larry_cry",
+  id: "922831779457536010",
+  name: "chorniy",
   roles: [],
   require_colons: true,
   managed: false,
