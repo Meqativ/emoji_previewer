@@ -97,7 +97,7 @@ function select(line, column, textarea){
 
 async function run(toparse) {
   let emojis = toparse ?? parse_textarea_value();
-  if (emojis === undefined) return show_error("No input provided", "test"); 
+  if (emojis === undefined && toparse === undefined) return show_error("No input provided"); 
   if (Array.isArray(emojis) === false) emojis = [emojis];
 
   if (window.localStorage["wait"] === "true") {
