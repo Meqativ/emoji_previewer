@@ -103,7 +103,7 @@ async function run(toparse) {
   if (window.localStorage["wait"] === "true") {
     for (let i = 0; i < emojis.length; i++) {
       try {
-        await add_emoji(emojis[i], i, EMOJI_SIZES.WTEXT);
+        await add_emoji(emojis[i], i, EMOJI_SIZES.MAX);
       } catch (e) {
         console.error(e);
         let id;
@@ -111,7 +111,7 @@ async function run(toparse) {
       }
     }
   } else {
-    Promise.allSettled(emojis.map((e,i) => add_emoji(e, i, EMOJI_SIZES.WTEXT)))
+    Promise.allSettled(emojis.map((e,i) => add_emoji(e, i, EMOJI_SIZES.MAX)))
     .then(
       rs => {
         if (rs.find(res=>res.status === "rejected")) show_error("There were some errors while loading the emojis", rs.filter(res=>res.status==="rejected").map(r=>r.stack).join("\n"))
