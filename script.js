@@ -45,7 +45,7 @@ function show_error(name, err, silent, buttons=["hide"]) {
   buttons.unshift(name_elem);
   status_header.innerHTML = "";
   for (const elem of buttons) status_header.appendChild(elem);
-  status_body_text.innerText = err?.stack || err?.message || err || "unknown";
+  status_body_text.innerText = err?.stack || err?.message || err || "";
 
   if (!silent) status_body.classList.remove("hidden");
 }
