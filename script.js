@@ -6,6 +6,7 @@ json_input.addEventListener("change", () => window.localStorage["json_input.last
 const checkbox_containers  = document.querySelectorAll('.toggle_container:has(input[type="checkbox"])');
 checkbox_containers.forEach((container)=>{
   const [label, checkbox] = container.children;
+  if (!checkbox.id.startsWith("!")) return;
   const variableName = checkbox.id.slice(1);
   checkbox.checked = window.localStorage[variableName] !== undefined ? window.localStorage[variableName] === "true" ? 1 : 0 : checkbox.getAttribute("default") === "true" ? 1 : 0;
 
@@ -13,7 +14,6 @@ checkbox_containers.forEach((container)=>{
     window.localStorage[variableName]  = checkbox.checked;
   });
 })
-
 const status_body = document.querySelector(".status"),
   status_header = document.querySelector(".status .header"),
   status_body_text = document.querySelector(".status .body");
@@ -45,7 +45,7 @@ function show_error(name, err, silent, buttons=["hide"]) {
   buttons.unshift(name_elem);
   status_header.innerHTML = "";
   for (const elem of buttons) status_header.appendChild(elem);
-  status_body_text.innerText = err?.stack || err?.message || err || "";
+  status_body_text.innerText = Date.now() + "\n" + (err?.stack || err?.message || err || "");
 
   if (!silent) status_body.classList.remove("hidden");
 }
@@ -104,6 +104,7 @@ async function run(toparse) {
     for (let i = 0; i < emojis.length; i++) {
       try {
         await add_emoji(emojis[i], i, EMOJI_SIZES.MAX);
+        document.querySelector("body > .results").scrollIntoView({ behavior: "smooth" });
       } catch (e) {
         console.error(e);
         let id;
@@ -111,15 +112,27 @@ async function run(toparse) {
       }
     }
   } else {
-    Promise.allSettled(emojis.map((e,i) => add_emoji(e, i, EMOJI_SIZES.MAX)))
+    await Promise.allSettled(emojis.map((e,i) => add_emoji(e, i, EMOJI_SIZES.MAX)))
     .then(
       rs => {
-        if (rs.find(res=>res.status === "rejected")) show_error("There were some errors while loading the emojis", rs.filter(res=>res.status==="rejected").map(r=>r.stack).join("\n"))
+        if (rs.find(res=>res.status === "rejected")) 
+          return show_error(
+            "There " + (rs.length > 1 ? "were some errors" : "was an error") + " while loading the emoji" + (rs.length > 1 ? "s" : ""), 
+            
+            rs.filter(res => res.status === "rejected")
+            .map(({reason: error}) => error?.stack ?? error?.message ?? error)
+            .join("\n\n")
+          )
+
+        document.querySelector("body > .results").scrollIntoView({ behavior: "smooth" });
       }
     )
+    .catch(e => {
+      console.error(e);
+      return show_error("There was an error while loading the emojis", e)
+    })
   }
 
-  document.querySelector("body > .results").scrollIntoView({ behavior: "smooth" });
 }
 run_btn.addEventListener("click", () => run());
 
@@ -161,26 +174,31 @@ function get_emoji_url(id,animated,size) {
 }
 
 const emoji_results_elem = document.querySelector(".result > .emojis")
-
+const imgrend_toggle = document.querySelector("#image-rendering");
+imgrend_toggle.addEventListener("change", state => {
+  const checked = imgrend_toggle.checked;
+  if (checked) emoji_results_elem.classList.add("pixelated");
+  else emoji_results_elem.classList.remove("pixelated")
+})
 function add_emoji(emoji, i, size) {
   return new Promise((res,rej)=>{
     const emoji_img = new Image();
     const error = new Error(); error.data = emoji;
-    if (!("id" in emoji)) throw (error.message = "No 'id' provided", error);
+    if (!("id" in emoji)) throw `No "id" provided (index: ${i})`;
     if (!("animated" in emoji)) {
       console.info(`[emoji #${i}] > No 'animated' provided, fallbacking to static`);
       emoji.animated = false;
     }
     emoji_img.addEventListener("error", (err) => {
       console.error(err)
-      rej({stack:"See errors in devtools near "+new Date().toLocaleTimeString()})
+      rej(new Error(`Invalid ID (index: ${i}, probably 404 Not Found, check devtools to make sure)`))
     })
     emoji_img.addEventListener("load", () => {
       res(emoji_img)
+      emoji_results_elem.append(emoji_img)
     })
 
     emoji_img.src = get_emoji_url(emoji.id, emoji.animated, size);
-    emoji_results_elem.append(emoji_img)
   });
 }  
 

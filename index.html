@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="./style.css" />
     <link preload rel="preconnect" href="https://fonts.googleapis.com">
     <link preload rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link preload href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
     <script defer src="./script.js"></script>
     <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <meta name="color-scheme" content="dark light">
@@ -18,16 +18,16 @@
         <code class="body">:3</code>
       </div>
       <div class="control"> 
-        <div class="toggle_container">
-						<label for="!wait">Wait for an emoji to load before loading next</label>
-						<input type="checkbox" id="!wait" default="false">
-					</div>
         <button id="run" title="Preview the emojis">
           preview
         </button>
         <button id="fmt">
           JSON.stringify(JSON.parse(input_text), 0, 4)
         </button>
+        <div class="toggle_container">
+						<label for="!show">Ignore errors, show anyway</label>
+						<input type="checkbox" id="!show" default="false">
+					</div>
         <textarea autofocus autocorrect="off" autocomplete="off" id="jsn" placeholder="Array of emoji JSONs or a single emoji JSON" name="Input"></textarea>
       </div>
     </div>
@@ -36,8 +36,11 @@
       <div class="result">
         <h1> Results (<span id="result_amount">0</span>) </h1>
         <h2>No results yet</h2>
+        <div class="toggle_container">
+				  <label for="image-rendering">image-rendering: pixelated;</label>
+          <input type="checkbox" id="image-rendering" default="false"> 
+				</div>
         <div class="emojis">
-
         </div>
       </div>
     </div>

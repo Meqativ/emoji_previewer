@@ -139,10 +139,12 @@ body > .results > button#back {
   transition: opacity .5s ease-out;
   font-size: 200%;
 }
+.emojis.pixelated img {
+  image-rendering: pixelated;
+}
 .emojis > img {
   width: 6rem;
   aspect-ratio: 1/1;
-  image-rendering: pixelated;
   object-fit: contain;
 }
 .toggle_container {
