@@ -95,6 +95,14 @@ function select(line, column, textarea){
 }
 
 
+const emoji_results_elem = document.querySelector(".result > .emojis"),
+  results_span = document.querySelector(".result h1 span#result_amount"),
+  imgrend_toggle = document.querySelector("#image-rendering");
+imgrend_toggle.addEventListener("change", state => {
+  const checked = imgrend_toggle.checked;
+  if (checked) emoji_results_elem.classList.add("pixelated");
+  else emoji_results_elem.classList.remove("pixelated")
+})
 async function run(toparse) {
   let emojis = toparse ?? parse_textarea_value();
   if (emojis === undefined && toparse === undefined) return show_error("No input provided"); 
@@ -105,6 +113,7 @@ async function run(toparse) {
     for (let i = 0; i < emojis.length; i++) {
       try {
         await add_emoji(emojis[i], i, EMOJI_SIZES.MAX);
+        results_span.innerText = `last operation: ${i}`;
       } catch (e) {
         console.error(e);
         let id;
@@ -123,7 +132,7 @@ async function run(toparse) {
             .map(({reason: error}) => error?.stack ?? error?.message ?? error)
             .join("\n\n")
           )
-
+        results_span.innerText = `last operation: ${rs.length}`
         document.querySelector("body > .results").scrollIntoView({ behavior: "smooth" });
       }
     )
@@ -173,13 +182,6 @@ function get_emoji_url(id,animated,size) {
   return `https://cdn.discordapp.com/emojis/${id}.${animated ? "gif" : "webp"}?size=${size??EMOJI_SIZES.MAX_JUMBO}&quality=lossless`
 }
 
-const emoji_results_elem = document.querySelector(".result > .emojis")
-const imgrend_toggle = document.querySelector("#image-rendering");
-imgrend_toggle.addEventListener("change", state => {
-  const checked = imgrend_toggle.checked;
-  if (checked) emoji_results_elem.classList.add("pixelated");
-  else emoji_results_elem.classList.remove("pixelated")
-})
 function add_emoji(emoji, i, size) {
   return new Promise((res,rej)=>{
     const emoji_img = new Image();

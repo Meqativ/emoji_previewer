@@ -25,7 +25,7 @@
           JSON.stringify(JSON.parse(input_text), 0, 4)
         </button>
         <div class="toggle_container">
-						<label for="!show">Ignore errors, show anyway</label>
+						<label for="!show">Sequential</label>
 						<input type="checkbox" id="!show" default="false">
 					</div>
         <textarea autofocus autocorrect="off" autocomplete="off" id="jsn" placeholder="Array of emoji JSONs or a single emoji JSON" name="Input"></textarea>
@@ -34,8 +34,7 @@
     <div class="results">
       <button class="hidden" id="back" title="Back to the control side">&#10094; back</button>
       <div class="result">
-        <h1> Results (<span id="result_amount">0</span>) </h1>
-        <h2>No results yet</h2>
+        <h1> Results (<span id="result_amount">none</span>) </h1>
         <div class="toggle_container">
 				  <label for="image-rendering">image-rendering: pixelated;</label>
           <input type="checkbox" id="image-rendering" default="false"> 
