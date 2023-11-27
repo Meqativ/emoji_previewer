@@ -100,11 +100,11 @@ async function run(toparse) {
   if (emojis === undefined && toparse === undefined) return show_error("No input provided"); 
   if (Array.isArray(emojis) === false) emojis = [emojis];
 
-  if (window.localStorage["wait"] === "true") {
+  if (window.localStorage["show"] === "true") {
+   document.querySelector("body > .results").scrollIntoView({ behavior: "smooth" });
     for (let i = 0; i < emojis.length; i++) {
       try {
         await add_emoji(emojis[i], i, EMOJI_SIZES.MAX);
-        document.querySelector("body > .results").scrollIntoView({ behavior: "smooth" });
       } catch (e) {
         console.error(e);
         let id;
